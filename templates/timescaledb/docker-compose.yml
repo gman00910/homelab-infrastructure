@@ -1,0 +1,39 @@
+version: '3.8'
+
+# TimescaleDB on ZFS — Production Template
+# Maps the PG data directory to a ZFS dataset for:
+#   - lz4 compression (transparent, ~2x space savings on time-series)
+#   - Snapshots (instant, consistent backups)
+#   - RAIDZ2 redundancy (survives 2 disk failures)
+#
+# Prerequisites:
+#   - ZFS pool with a dataset for DB storage
+#   - Docker installed on the host
+#
+# Usage:
+#   cp .env.example .env  # Fill in credentials
+#   docker compose up -d
+
+services:
+  timescaledb:
+    image: timescale/timescaledb-ha:pg16-all
+    container_name: timescaledb_service
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      # Point this at your ZFS dataset path
+      - ${ZFS_DATA_PATH}:/var/lib/postgresql/data
+    # Optional: tune shared_buffers for your RAM
+    # command: postgres -c shared_buffers=4GB -c work_mem=64MB
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+# No named volumes — we use a direct ZFS bind mount

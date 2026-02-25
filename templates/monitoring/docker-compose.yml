@@ -1,0 +1,50 @@
+version: '3.8'
+
+# Homelab Monitoring Stack
+# Homepage (dashboard) + Watchtower (auto-updates) + Tautulli (Plex stats)
+#
+# Usage:
+#   cp .env.example .env
+#   docker compose up -d
+#   Homepage: http://localhost:3000
+#   Tautulli: http://localhost:8181
+
+services:
+  homepage:
+    image: ghcr.io/gethomepage/homepage:latest
+    container_name: homepage
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./homepage-config:/app/config
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      - PUID=1000
+      - PGID=1000
+
+  watchtower:
+    image: containrrr/watchtower
+    container_name: watchtower
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_SCHEDULE=0 0 4 * * *   # 4 AM daily
+      - WATCHTOWER_NOTIFICATIONS=shoutrrr
+      # Optional: notification URL (Discord, Slack, etc.)
+      # - WATCHTOWER_NOTIFICATION_URL=${NOTIFICATION_URL}
+
+  tautulli:
+    image: lscr.io/linuxserver/tautulli:latest
+    container_name: tautulli
+    restart: unless-stopped
+    ports:
+      - "8181:8181"
+    volumes:
+      - ./tautulli-config:/config
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=${TZ:-America/Denver}
