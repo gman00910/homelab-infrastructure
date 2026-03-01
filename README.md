@@ -6,14 +6,6 @@ A multi-node homelab built for quantitative market analysis, ML inference, and m
 
 ---
 
-## Homepage
-
-<p align="center">
-  <img src="./assets/homepage.png" alt="Homelab Homepage" width="800"/>
-  <br/>
-  <em>Homelab service dashboard — media servers, monitoring, and infrastructure at a glance</em>
-</p>
-
 ## Architecture
 
 <p align="center">
