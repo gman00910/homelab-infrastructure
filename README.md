@@ -5,8 +5,26 @@ A multi-node homelab built for quantitative market analysis, ML inference, and m
 > **Note:** This repo contains infrastructure documentation and sanitized configuration templates. The application layer (trading platform, analytics dashboard, ML pipelines) lives in private repos.
 
 ---
-*** ADD SYSTEM CHART ***
-```
+
+## Homepage
+
+<p align="center">
+  <img src="./assets/homepage.png" alt="Homelab Homepage" width="800"/>
+  <br/>
+  <em>Homelab service dashboard — media servers, monitoring, and infrastructure at a glance</em>
+</p>
+
+## Architecture
+
+<p align="center">
+  <img src="./assets/flow-diagram.png" alt="High-Level Data Flow Diagram" width="800"/>
+  <br/>
+  <em>High-level data flow across the distributed node cluster</em>
+</p>
+
+---
+
+## Storage
 
 ### ZFS Pool (NAS — OMV VM)
 
